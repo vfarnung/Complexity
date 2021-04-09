@@ -98,6 +98,10 @@ function traverseWithParents(object, visitor)
         }
     }
 }
+function countConditions(node){
+	traverseWithParents(node,function(node){
+	}
+}
 
 function complexity(filePath)
 {
@@ -110,23 +114,42 @@ function complexity(filePath)
 	var fileBuilder = new FileBuilder();
 	fileBuilder.FileName = filePath;
 	fileBuilder.ImportCount = 0;
+	fileBuilder.node.params.length;
 	builders[filePath] = fileBuilder;
+	fileBuilder.Strings=0;
 
 	// Tranverse program with a function visitor.
 	traverseWithParents(ast, function (node) 
 	{
+		count=0;
 		if (node.type === 'FunctionDeclaration') 
 		{
 			var builder = new FunctionBuilder();
 
 			builder.FunctionName = functionName(node);
 			builder.StartLine    = node.loc.start.line;
+			builder.ParameterCount= node.params.length;
+			builder.SimpleCyclomaticComplexity+=1;
 
 			builders[builder.FunctionName] = builder;
+			console.log(node.body.body.type)
+			if(node.body.type === "Blockstatement"){
+				if(node.body.type === "IfStatement'){
+				   builder.SimpleCyclomaticComplexity+=1;
+				}
+			}
+				
+				   
+		}
+		if(isDesicion(node) === true){
+			builder.SimpleCyclomaticComplexity+=1;
+		}
+		if(node.type === "Literal"){
+		fileBuilder.strings+=1;
 		}
 
 	});
-
+	
 }
 
 // Helper function for counting children of node.
